@@ -477,6 +477,7 @@ class DaplinkBoard(object):
             test_info.failure("Bootloader CRC is wrong")
 
     def wait_for_remount(self, parent_test, wait_time=120):
+        assert isinstance(parent_test, TestInfo), "Invalid parent test object!"
         mode = self._mode
         count = self._remount_count
         test_info = parent_test.create_subtest('wait_for_remount')
@@ -533,6 +534,7 @@ class DaplinkBoard(object):
         Note - before this function is set self.unique_id
         must be set.
         """
+        assert isinstance(self.unique_id, str), "Invalid UNIQUE_ID!"
         endpoints = _get_board_endpoints(self.unique_id)
         if endpoints is None:
             if exptn_on_fail:
