@@ -34,8 +34,19 @@
 extern "C" {
 #endif
 
-uint8_t swd_init(void);
-uint8_t swd_off(void);
+#define SWD_OWNER_NAME_LENGTH	8
+#define SWD_OWNER_NAME_FLASH 	"FLASH"
+#define SWD_OWNER_NAME_DEBUG	"DEBUG"
+#define SWD_OWNER_NAME_UART		"UART"
+
+uint8_t swd_init(const char *owner);
+uint8_t swd_off(const char *owner);
+uint8_t swd_lock_owner(const char *owner);
+uint8_t swd_unlock_owner(const char *owner);
+uint8_t swd_unlock(void);
+uint8_t swd_is_locked(void);
+uint8_t swd_is_locked_owner(const char *owner);
+uint8_t swd_init_lock(const char *owner);
 uint8_t swd_init_debug(void);
 uint8_t swd_read_dp(uint8_t adr, uint32_t *val);
 uint8_t swd_write_dp(uint8_t adr, uint32_t val);
@@ -46,7 +57,11 @@ uint8_t swd_write_memory(uint32_t address, uint8_t *data, uint32_t size);
 uint8_t swd_flash_syscall_exec(const program_syscall_t *sysCallParam, uint32_t entry, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4);
 void swd_set_target_reset(uint8_t asserted);
 uint8_t swd_set_target_state_hw(TARGET_RESET_STATE state);
+uint8_t swd_set_target_state_hw_lock(TARGET_RESET_STATE state, const char *owner);
 uint8_t swd_set_target_state_sw(TARGET_RESET_STATE state);
+uint8_t swd_set_target_state_sw_lock(TARGET_RESET_STATE state, const char *owner);
+uint8_t swd_DAP_ProcessVendorCommand_lock(uint8_t *request, uint8_t *response, const char *owner);
+uint32_t swd_DAP_ProcessCommand_lock(uint8_t *request, uint8_t *response, const char *owner);
 
 #ifdef __cplusplus
 }

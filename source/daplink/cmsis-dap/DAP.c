@@ -212,6 +212,9 @@ static uint32_t DAP_HostStatus(uint8_t *request, uint8_t *response) {
 static uint32_t DAP_Connect(uint8_t *request, uint8_t *response) {
   uint32_t port;
 
+  // Lock SWD Port, eject if already in use by others.
+  if (!swd_lock_owner("HID")) return 0;
+
   if (*request == DAP_PORT_AUTODETECT) {
     port = DAP_DEFAULT_PORT;
   } else {
@@ -246,6 +249,9 @@ static uint32_t DAP_Connect(uint8_t *request, uint8_t *response) {
 //   response: pointer to response data
 //   return:   number of bytes in response
 static uint32_t DAP_Disconnect(uint8_t *response) {
+
+  // Unlock SWD Port, eject if already in use by others.
+  if (!swd_lock_owner("HID")) return 0;
 
   DAP_Data.debug_port = DAP_PORT_DISABLED;
   PORT_OFF();

@@ -56,6 +56,12 @@ static error_t target_flash_init()
 {
     const program_target_t *const flash = target_device.flash_algo;
 
+    // Lock SWD Port or eject if already in use.
+    if (!swd_lock_owner(SWD_OWNER_NAME_FLASH)) {
+    		util_assert(0);
+    		return 0;
+    }
+
     if (0 == target_set_state(RESET_PROGRAM)) {
         return ERROR_RESET;
     }
@@ -79,6 +85,7 @@ static error_t target_flash_uninit(void)
         target_set_state(RESET_RUN);
     }
 
+    	// This will also unlock SWD Port for all.
     swd_off();
     return ERROR_SUCCESS;
 }
@@ -86,6 +93,12 @@ static error_t target_flash_uninit(void)
 static error_t target_flash_program_page(uint32_t addr, const uint8_t *buf, uint32_t size)
 {
     const program_target_t *const flash = target_device.flash_algo;
+
+    // Lock SWD Port or eject if already in use.
+    if (!swd_lock_owner(SWD_OWNER_NAME_FLASH)) {
+    		util_assert(0);
+    		return 0;
+    }
 
     // check if security bits were set
     if (1 == security_bits_set(addr, (uint8_t *)buf, size)) {
@@ -139,6 +152,12 @@ static error_t target_flash_program_page(uint32_t addr, const uint8_t *buf, uint
 static error_t target_flash_erase_sector(uint32_t addr)
 {
     const program_target_t *const flash = target_device.flash_algo;
+
+    // Lock SWD Port or eject if already in use.
+    if (!swd_lock_owner(SWD_OWNER_NAME_FLASH)) {
+    		util_assert(0);
+    		return 0;
+    }
 
     // Check to make sure the address is on a sector boundary
     if ((addr % target_device.sector_size) != 0) {

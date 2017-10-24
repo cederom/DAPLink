@@ -104,7 +104,6 @@ static uint8_t swd_transfer_retry(uint32_t req, uint32_t *data)
     return ack;
 }
 
-
 uint8_t swd_init(void)
 {
     //TODO - DAP_Setup puts GPIO pins in a hi-z state which can
@@ -118,6 +117,7 @@ uint8_t swd_init(void)
 uint8_t swd_off(void)
 {
     PORT_OFF();
+    swd_unlock();
     return 1;
 }
 
